@@ -10,7 +10,7 @@
 import serial
 import pandas as pd
 
-ser = serial.Serial('/dev/ttyS1')     # For use in field
+ser = serial.Serial('/dev/ttyS0')     # For use in field
 ser.baudrate = 9600
 ser.bytesize = 8
 ser.parity = 'N'
@@ -27,7 +27,7 @@ ser.timeout = 1
 packet_to_send = bytearray([0x55, 0x01, 0x01, 0x01, 0x03])
 logging_check = bytearray([0xff])
 packet_to_log = bytearray([0x55, 0x01, 0x01, 0x01, 0x03])
-radar_position = pd.read_csv("/home/radar/UOL_scripts/AGC_commander/antenna_positions.csv")
+radar_position = pd.read_csv("/home/radar/UOL_scripts/Antenna_Positions_CSV/antenna_positions.csv")
 
 def logging_stuff():
     fault_counter = 0
@@ -45,29 +45,29 @@ def logging_stuff():
             packet_to_send[4] = (sum(packet_to_send[1:4]))
             ser.write(packet_to_send)
             data_received = ser.readall()
-            expected_response = packet_to_send[0:1]
-            logging_check_two = logging_check[0:1]
+            expected_response = packet_to_send[0]
 
-            if data_received[0:1] == expected_response:
-                print("no comment")
-
-                if data_received[14:15] == logging_check_two:
-                    print("no comment")
+            if data_received[0] == expected_response:
+                print('Response Received, TX addr: ', rad_value)
+                if data_received[14] == logging_check[0]:
+                    print('Reset not required')
                 else:
                     fault_counter = fault_counter + 1
                     reset_mic()
+                    print('Reset command sent')
             else:
                 fault_counter = fault_counter + 1
                 reset_mic()
+                print('Reset command sent')
 
 def reset_mic():
 
     rad_value = int(logging_stuff.var, 16)
-    print(rad_value)
     packet_to_send[1] = rad_value
     packet_to_send[3] = 0x0a
     packet_to_send[4] = (sum(packet_to_send[1:4]))
     ser.write(packet_to_send)
-    print(packet_to_send)
+    data_received = ser.readall()
+
 
 logging_stuff()
