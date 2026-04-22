@@ -1,4 +1,4 @@
-# Python Transmitter reset
+## Python Transmitter reset
 # Cassie Lakin
 # V1.0
 # This program scans through all the transmitters and if any faults are found it will reset the transmitters accordingly
@@ -10,7 +10,7 @@
 import serial
 import pandas as pd
 
-ser = serial.Serial('/dev/ttyS0')     # For use in field
+ser = serial.Serial('/dev/ttyS1')     # For use in field
 ser.baudrate = 9600
 ser.bytesize = 8
 ser.parity = 'N'

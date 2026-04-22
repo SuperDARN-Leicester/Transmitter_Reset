@@ -7,12 +7,12 @@
 import serial
 import pandas as pd
 
-ser = serial.Serial('/dev/ttyS0')     # For use in field
+ser = serial.Serial('/dev/ttyS1')     # For use in field
 ser.baudrate = 9600
 ser.bytesize = 8
 ser.parity = 'N'
 ser.stopbits = 1
-ser.timeout = 1
+ser.timeout = 0.1
 
 # Main Data String Array in bytes.
 # 0 "STX" byte is always 55(hex).
